@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MyPictures</title>
+
+    <!-- meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- css -->
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'pictures/css/pace.css' %}">
+    <link rel="stylesheet" href="{% static 'pictures/css/custom.css' %}">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .codehilite {
+        padding: 0;
+        }
+
+        /* for block of numbers */
+        .hljs-ln-numbers {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        text-align: center;
+        color: #ccc;
+        border-right: 1px solid #CCC;
+        vertical-align: top;
+        padding-right: 5px;
+        }
+
+        .hljs-ln-n {
+        width: 30px;
+        }
+
+        /* for block of code */
+        .hljs-ln .hljs-ln-code {
+        padding-left: 10px;
+        white-space: pre;
+        }
+
+        span.highlighted {
+            color: red;
+        }
+    </style>
+
+    <!-- js -->
+    <script src="https://cdn.bootcss.com/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="nav navbar-fixed-top">
+    <div class="container">
+        <header id="site-header">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-xs-6">
+                    <div class="logo">
+                        <h1><a href="{% url 'pictures:index' %}"><b>MyPictures</b></a></h1>
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-6 col-xs-6">
+                    <div class="header-search hidden-xs hidden-sm">
+                        <form role="search" method="get" action="{% url 'pictures:file_search' %}">
+                            <span id="search-lead">|</span>
+                            <input type="search" id="search-input" name="q" placeholder="搜索..." required>
+                            <button id="search-btn" type="submit"><span class="ion-ios-search-strong"></span></button>
+                        </form>
+                        {% if user.is_authenticated %}
+                          <p>| Welcome：<a href="#">{{ user.username }}</a></p>
+                          <button class="btn btn-default"><a href="{% url 'logout' %}">退出</a></button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </header>
+    </div>
+</div>
+<div class="header-position"></div>
+<div class="container msg-container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissable" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<div class="content-body">
+    <div class="container">
+            <main>
+                {% block main %}
+                {% endblock main %}
+            </main>
+    </div>
+</div>
+<footer id="site-footer">
+    <div class="container">
+        <div class="row">
+            <hr>
+            <div class="col-md-12">
+                <p class="footer-text">联系方式：kant@kantli.com</p>
+            </div>
+            <div class="col-md-12">
+                <p class="footer-text"><a style="color: #666" href="https://github.com/kant-li/mypictures">https://github.com/kant-li/mypictures</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
