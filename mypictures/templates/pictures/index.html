@@ -1,4 +1,14 @@
 {% extends 'base.html' %}
 {% block main %}
-main content
+<div class="file_upload_div">
+    <form enctype="multipart/form-data" action="{% url 'pictures:file_upload' %}" method="post">
+        {% csrf_token %}
+        <input type="file" name="file">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+<hr>
+<div class="file_list_div">
+    file_list
+</div>
 {% endblock main %}

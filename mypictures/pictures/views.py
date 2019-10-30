@@ -1,10 +1,14 @@
 # from django.shortcuts import render
-from django.http import HttpResponse
+import os
+
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 
 from .models import File
+from .config import ALLOW_EXTENSIONS, UPLOAD_DIR
 
 
 class IndexView(LoginRequiredMixin, ListView):
@@ -21,10 +25,10 @@ class IndexView(LoginRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         """分页数据"""
         context = super().get_context_data(**kwargs)
+
         paginator = context.get('paginator')
         page = context.get('page_obj')
         is_paginated = context.get('is_paginated')
-
         pagination_data = self.pagination_data(paginator, page, is_paginated)
 
         context.update(pagination_data)
@@ -75,13 +79,32 @@ class FileSearch(IndexView):
         pass
 
 
+def get_file(request):
+    """返回图片"""
+    pass
+
+
 @login_required
 def upload(request):
     """上传文件"""
-    pass
+    file = request.FILES['file']
+    extension = file.name.split('.')[-1]
+
+    if extension not in ALLOW_EXTENSIONS:
+        messages.add_message(request, messages.ERROR, '不支持的文件格式！', extra_tags='danger')
+    else:
+        myfile = File(filename=file.name, user=request.user)
+        with open(os.path.join(UPLOAD_DIR, myfile.md5_name), 'wb+') as f:
+            for chunk in file.chunks():
+                f.write(chunk)
+        myfile.save()
+
+    ori_page = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(ori_page)
 
 
 @login_required
 def remove_file(request):
     """删除已上传文件"""
+
     pass

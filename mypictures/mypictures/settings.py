@@ -127,5 +127,5 @@ STATICFILES_DIRS = [
 ]
 
 # 其它设置
-LOGIN_REDIRECT_URL = '/pictures'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/accounts/login'
