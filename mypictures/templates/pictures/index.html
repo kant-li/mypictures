@@ -9,6 +9,45 @@
 </div>
 <hr>
 <div class="file_list_div">
-    file_list
+    {% for file in files %}
+    <p>{{ file.filename }}</p>
+    {% empty %}
+        <div class="no-post">还未上传文件！</div>
+    {% endfor %}
+
+    <!-- 分页 -->
+    {% if is_paginated %}
+        <div class="pagination">
+        {% if left %}
+        <a class="btn btn-text" href="?page={{ left.0 }}"><span class="ion-arrow-left-b"></span></a>
+        {% endif %}
+        {% if first %}
+            <a class="btn btn-text" href="?page=1">1</a>
+        {% endif %}
+        {% if left %}
+            {% if left_has_more %}
+                <span>...</span>
+            {% endif %}
+            {% for i in left %}
+                <a class="btn btn-text" href="?page={{ i }}">{{ i }}</a>
+            {% endfor %}
+        {% endif %}
+        <a class="btn btn-text" disabled="disabled" href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+        {% if right %}
+            {% for i in right %}
+                <a class="btn btn-text" href="?page={{ i }}">{{ i }}</a>
+            {% endfor %}
+            {% if right_has_more %}
+                <span>...</span>
+            {% endif %}
+        {% endif %}
+        {% if last %}
+            <a class="btn btn-text" href="?page={{ paginator.num_pages }}">{{ paginator.num_pages }}</a>
+        {% endif %}
+        {% if right %}
+        <a class="btn btn-text" href="?page={{ right.0 }}"><span class="ion-arrow-right-b"></span></a>
+        {% endif %}
+        </div>
+    {% endif %}
 </div>
 {% endblock main %}

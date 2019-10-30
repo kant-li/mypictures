@@ -93,7 +93,7 @@ def upload(request):
     if extension not in ALLOW_EXTENSIONS:
         messages.add_message(request, messages.ERROR, '不支持的文件格式！', extra_tags='danger')
     else:
-        myfile = File(filename=file.name, user=request.user)
+        myfile = File.create(filename=file.name, user=request.user)
         with open(os.path.join(UPLOAD_DIR, myfile.md5_name), 'wb+') as f:
             for chunk in file.chunks():
                 f.write(chunk)

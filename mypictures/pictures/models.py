@@ -1,4 +1,5 @@
 import hashlib
+from datetime import datetime
 
 from django.db import models
 from django.utils import timezone
@@ -13,12 +14,14 @@ class File(models.Model):
 
     md5_name = models.CharField('加密名称', max_length=64)
 
-    def __init__(self, filename, user):
-        super().__init__()
-        self.filename = filename
-        self.user = user
-        self.md5_name = self._generate_md5_name()
+    @classmethod
+    def create(cls, filename, user):
+        file = cls(filename=filename, user=user)
+        file.md5_name = cls._generate_md5_name(filename)
+        return file
 
-    def _generate_md5_name(self):
-        """生成md5加密后的名称"""
-        return hashlib.md5(self.filename.encode('utf-8')).hexdigest() + '.' + self.filename.split('.')[-1]
+    @staticmethod
+    def _generate_md5_name(filename):
+        """生成md5加密后的名称，加入当前时间字符串，避免文件名重复带来的问题"""
+        md5_str = datetime.strftime(datetime.now(), "%Y-%m-%dT%H:%M:%S") + filename
+        return hashlib.md5(md5_str.encode('utf-8')).hexdigest() + '.' + filename.split('.')[-1]
