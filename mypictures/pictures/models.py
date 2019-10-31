@@ -13,6 +13,7 @@ class File(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     md5_name = models.CharField('加密名称', max_length=64)
+    removed = models.IntegerField('已删除', default=0)
 
     @classmethod
     def create(cls, filename, user):

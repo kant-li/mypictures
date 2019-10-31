@@ -67,7 +67,8 @@
                 </div>
                 <div class="col-md-8 col-sm-6 col-xs-6">
                     <div class="header-search hidden-xs hidden-sm">
-                        <form role="search" method="get" action="{% url 'pictures:file_search' %}">
+                        <form role="search" method="post" action="{% url 'pictures:file_search' %}">
+                            {% csrf_token %}
                             <span id="search-lead">|</span>
                             <input type="search" id="search-input" name="q" placeholder="搜索..." required>
                             <button id="search-btn" type="submit"><span class="ion-ios-search-strong"></span></button>

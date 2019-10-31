@@ -1,7 +1,8 @@
-# from django.shortcuts import render
 import os
 
-from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.http import HttpResponseRedirect, FileResponse, Http404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -72,16 +73,30 @@ class IndexView(LoginRequiredMixin, ListView):
 
         return data
 
+    def get_queryset(self):
+        return super(IndexView, self).get_queryset().filter(user=self.request.user, removed=0)
+
 
 class FileSearch(IndexView):
     """文件搜索结果视图"""
     def get_queryset(self):
-        pass
+        return super(FileSearch, self).get_queryset().filter(filename__contains=self.kwargs.get('keyword'))
 
 
-def get_file(request):
+def search(request):
+    """搜索"""
+    return HttpResponseRedirect(reverse('pictures:search_result', kwargs={'keyword': request.POST.get('q')}))
+
+
+def get_file(request, filename):
     """返回图片"""
-    pass
+    filepath = os.path.join(UPLOAD_DIR, filename)
+    try:
+        response = FileResponse(open(filepath), 'rb')
+        response['Content-Type'] = 'application/octet-stream'
+        return response
+    except Exception:
+        return Http404
 
 
 @login_required
@@ -104,7 +119,21 @@ def upload(request):
 
 
 @login_required
-def remove_file(request):
+def remove(request, pk):
     """删除已上传文件"""
+    # 修改状态
+    file = get_object_or_404(File, pk=pk)
+    file.removed = 1
+    file.save()
 
-    pass
+    # 移除文件
+    filepath = os.path.join(UPLOAD_DIR, file.md5_name)
+    try:
+        os.remove(filepath)
+    except Exception:
+        pass
+
+    # 返回
+    messages.add_message(request, messages.SUCCESS, '文件已删除！', extra_tags='success')
+    ori_page = request.META.get('HTTP_REFERER', '/')
+    return HttpResponseRedirect(ori_page)
