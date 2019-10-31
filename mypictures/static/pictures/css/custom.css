@@ -171,9 +171,11 @@ blockquote p {
  * 3.1 - Logo
  */
 
-.logo h1 a {
-    color: #000;
-}
+/**
+ *.logo h1 a {
+ *   color: #000;
+ *}
+ */
 
 .logo h1 a:hover {
     text-decoration: none;
