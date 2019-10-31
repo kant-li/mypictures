@@ -74,7 +74,7 @@ class IndexView(LoginRequiredMixin, ListView):
         return data
 
     def get_queryset(self):
-        return super(IndexView, self).get_queryset().filter(user=self.request.user, removed=0)
+        return super(IndexView, self).get_queryset().filter(user=self.request.user, removed=0).order_by('-id')
 
 
 class FileSearch(IndexView):
@@ -92,8 +92,7 @@ def get_file(request, filename):
     """返回图片"""
     filepath = os.path.join(UPLOAD_DIR, filename)
     try:
-        response = FileResponse(open(filepath), 'rb')
-        response['Content-Type'] = 'application/octet-stream'
+        response = FileResponse(open(filepath, 'rb'))
         return response
     except Exception:
         return Http404
