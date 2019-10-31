@@ -5,6 +5,7 @@ uploadfiles/
 downloads/
 qrcodes/
 migrations/
+.idea/
 *.DS_Store
 *.lock
 *.pyc
