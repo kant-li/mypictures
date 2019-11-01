@@ -12,6 +12,7 @@ python manage.py migrate
 python manage.py runserver
 
 ```
+
 2. 通过shell命令添加用户
 ```python
 python manage.py shell
@@ -23,3 +24,9 @@ user.save()
 ```
 
 3. 登录页面，开始上传文件
+
+3.1 登录
+![登录](./mypictures/static/samples/login.png)
+
+3.2 上传
+![上传](./mypictures/static/samples/upload.png)
