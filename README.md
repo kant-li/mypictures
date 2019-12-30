@@ -2,10 +2,15 @@
 Django写的简单图床（文件中转）应用，支持用户区分、文件名搜索等。
 
 ## 用法
+0. 记得添加 ALLOW_HOSTS ，设置 DEBUG 为 False
+
 1. 直接部署Django应用
 ```python
 # 数据迁移
 python manage.py makemigrations
+python manage.py migrate
+
+python manage.py makemigrations pictures
 python manage.py migrate
 
 # 开启服务器
