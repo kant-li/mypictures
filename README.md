@@ -28,10 +28,16 @@ user.save()
 
 ```
 
-3. 登录页面，开始上传文件
+3. 添加文件夹
 
-3.1 登录
+```bash
+mkdir uploadfiles
+```
+
+4. 登录页面，开始上传文件
+
+4.1 登录
 ![登录](./mypictures/static/samples/login.png)
 
-3.2 上传
+4.2 上传
 ![上传](./mypictures/static/samples/upload.png)
