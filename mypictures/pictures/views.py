@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
+from django.utils.datastructures import MultiValueDictKeyError
 
 from .models import File
 from .config import ALLOW_EXTENSIONS, UPLOAD_DIR
@@ -101,17 +102,23 @@ def get_file(request, filename):
 @login_required
 def upload(request):
     """上传文件"""
-    file = request.FILES['file']
-    extension = file.name.split('.')[-1]
+    try:
+        files = request.FILES.getlist('file')
+    except MultiValueDictKeyError:
+        messages.add_message(request, messages.ERROR, '未选择文件！', extra_tags='danger')
+        ori_page = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(ori_page)
 
-    if extension not in ALLOW_EXTENSIONS:
-        messages.add_message(request, messages.ERROR, '不支持的文件格式！', extra_tags='danger')
-    else:
-        myfile = File.create(filename=file.name, user=request.user)
-        with open(os.path.join(UPLOAD_DIR, myfile.md5_name), 'wb+') as f:
-            for chunk in file.chunks():
-                f.write(chunk)
-        myfile.save()
+    for file in files:
+        extension = file.name.split('.')[-1]
+        if extension not in ALLOW_EXTENSIONS:
+            messages.add_message(request, messages.ERROR, '不支持的文件格式！', extra_tags='danger')
+        else:
+            my_file = File.create(filename=file.name, user=request.user)
+            with open(os.path.join(UPLOAD_DIR, my_file.md5_name), 'wb+') as f:
+                for chunk in file.chunks():
+                    f.write(chunk)
+            my_file.save()
 
     ori_page = request.META.get('HTTP_REFERER', '/')
     return HttpResponseRedirect(ori_page)
