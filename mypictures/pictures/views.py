@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
+from django.utils.datastructures import MultiValueDictKeyError
 
 from .models import File
 from .config import ALLOW_EXTENSIONS, UPLOAD_DIR
@@ -101,7 +102,13 @@ def get_file(request, filename):
 @login_required
 def upload(request):
     """上传文件"""
-    file = request.FILES['file']
+    try:
+        file = request.FILES['file']
+    except MultiValueDictKeyError:
+        messages.add_message(request, messages.ERROR, '未选择文件！', extra_tags='danger')
+        ori_page = request.META.get('HTTP_REFERER', '/')
+        return HttpResponseRedirect(ori_page)
+
     extension = file.name.split('.')[-1]
 
     if extension not in ALLOW_EXTENSIONS:
