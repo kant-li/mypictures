@@ -3,13 +3,11 @@
 <script>
     function copy_text(host, text){
         var input = document.getElementById("copy_area");
-        console.log(input.value);
         input.value = host + text;
-        console.log(input.value);
         input.select();
         document.execCommand("copy");
         alert("复制成功");
-    }
+    };
 </script>
 <div class="file_upload_div">
     <form class="form-inline" enctype="multipart/form-data" action="{% url 'pictures:file_upload' %}" method="post">
@@ -31,12 +29,13 @@
         <div class="col-md-4">
             <p>{{ file.filename }}</p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <p>{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}{% url 'pictures:get_file' file.md5_name %}</p>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <a class="btn btn-default btn-sm" href="{% url 'pictures:get_file' file.md5_name %}">下载</a>
             <button class="btn btn-default btn-sm" onclick="copy_text('{% if request.is_secure %}https://{% else %}http://{% endif %}{{ request.get_host }}', '{% url 'pictures:get_file' file.md5_name %}')">复制链接</button>
+            <a class="btn btn-default btn-sm" style="color:red" href="{% url 'pictures:file_remove' file.pk %}">删除</a>
         </div>
     </div>
     <hr>
